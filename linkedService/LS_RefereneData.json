@@ -1,0 +1,12 @@
+{
+	"name": "LS_RefereneData",
+	"properties": {
+		"annotations": [],
+		"type": "HttpServer",
+		"typeProperties": {
+			"url": "https://raw.githubusercontent.com/TaiBuiii/nyc-green-taxi-data-pipeline/refs/heads/main/reference_data/",
+			"enableServerCertificateValidation": true,
+			"authenticationType": "Anonymous"
+		}
+	}
+}
