@@ -30,7 +30,7 @@
 				}
 			},
 			{
-				"name": "ForEach1",
+				"name": "For Each Year And Month",
 				"type": "ForEach",
 				"dependsOn": [
 					{
@@ -42,6 +42,7 @@
 				],
 				"userProperties": [],
 				"typeProperties": {
+					"isSequential": true,
 					"activities": [
 						{
 							"name": "Copy Raw Trip Data",
@@ -90,7 +91,11 @@
 									"referenceName": "DS_TaxiData",
 									"type": "DatasetReference",
 									"parameters": {
-										"year": "@item().year"
+										"year": "@item().year",
+										"month": {
+											"value": "@item().month",
+											"type": "Expression"
+										}
 									}
 								}
 							],
