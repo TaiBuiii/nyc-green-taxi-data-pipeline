@@ -1,0 +1,16 @@
+{
+	"name": "LS_AzureDataLakeStorage",
+	"properties": {
+		"parameters": {
+			"storage_name": {
+				"type": "string",
+				"defaultValue": "datalakenycgreentaxi"
+			}
+		},
+		"annotations": [],
+		"type": "AzureBlobFS",
+		"typeProperties": {
+			"url": "https://@{linkedService().storage_name}.dfs.core.windows.net/"
+		}
+	}
+}
