@@ -1,6 +1,16 @@
 {
 	"name": "pipeline",
 	"properties": {
+		"parameters": {
+			"p_StorageAccountName": {
+				"type": "string",
+				"defaultValue": "datalakenycgreentaxi"
+			},
+			"p_KeyVaultName": {
+				"type": "string",
+				"defaultValue": "key-vault-nyc-green-taxi"
+			}
+		},
 		"annotations": []
 	}
 }
