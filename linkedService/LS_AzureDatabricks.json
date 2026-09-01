@@ -1,24 +1,41 @@
 {
 	"name": "LS_AzureDatabricks",
 	"properties": {
+		"parameters": {
+			"databrick_workspace_url": {
+				"type": "string",
+				"defaultValue": "https://adb-7405616972863473.13.azuredatabricks.net"
+			},
+			"select_cluster": {
+				"type": "string",
+				"defaultValue": "12.2.x-scala2.12"
+			},
+			"cluster_node_type": {
+				"type": "string",
+				"defaultValue": "Standard_DS3_v2"
+			}
+		},
 		"annotations": [],
 		"type": "AzureDatabricks",
 		"typeProperties": {
-			"domain": "https://adb-7405616972863473.13.azuredatabricks.net",
+			"domain": "@linkedService().databrick_workspace_url",
 			"accessToken": {
 				"type": "AzureKeyVaultSecret",
 				"store": {
 					"referenceName": "LS_AzureKeyVault",
-					"type": "LinkedServiceReference"
+					"type": "LinkedServiceReference",
+					"parameters": {
+						"key_vault_name": "key-vault-nyc-green-taxi"
+					}
 				},
 				"secretName": "databricks-token"
 			},
-			"newClusterNodeType": "Standard_DS3_v2",
+			"newClusterNodeType": "@linkedService().cluster_node_type",
 			"newClusterNumOfWorker": "1:3",
 			"newClusterSparkEnvVars": {
 				"PYSPARK_PYTHON": "/databricks/python3/bin/python3"
 			},
-			"newClusterVersion": "12.2.x-scala2.12",
+			"newClusterVersion": "@linkedService().select_cluster",
 			"clusterOption": "Autoscaling",
 			"newClusterInitScripts": []
 		}
