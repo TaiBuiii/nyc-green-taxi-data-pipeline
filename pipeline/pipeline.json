@@ -42,10 +42,106 @@
 				],
 				"userProperties": [],
 				"typeProperties": {
+					"items": {
+						"value": "@activity('Lookup Ingestion Metadata').output.value",
+						"type": "Expression"
+					},
 					"isSequential": true,
 					"activities": [
 						{
 							"name": "Copy Raw Trip Data",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "ParquetSource",
+									"storeSettings": {
+										"type": "HttpReadSettings",
+										"requestMethod": "GET"
+									},
+									"formatSettings": {
+										"type": "ParquetReadSettings"
+									}
+								},
+								"sink": {
+									"type": "ParquetSink",
+									"storeSettings": {
+										"type": "AzureBlobFSWriteSettings"
+									},
+									"formatSettings": {
+										"type": "ParquetWriteSettings"
+									}
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"typeConversion": true,
+									"typeConversionSettings": {
+										"allowDataTruncation": true,
+										"treatBooleanAsNumber": false
+									}
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "DS_TaxiData",
+									"type": "DatasetReference",
+									"parameters": {
+										"year": "@item().year",
+										"month": {
+											"value": "@item().month",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "DS_AzureDataLakeStorage",
+									"type": "DatasetReference",
+									"parameters": {
+										"year": "@item().year",
+										"month": "@item().month",
+										"storage_name": {
+											"value": "@pipeline().parameters.p_DBName",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						}
+					]
+				}
+			},
+			{
+				"name": "For Each Year And Month_copy1",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "For Each Year And Month",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Lookup Ingestion Metadata').output.value",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "Copy Raw Trip Data_copy1",
 							"type": "Copy",
 							"dependsOn": [],
 							"policy": {
@@ -122,6 +218,9 @@
 			"p_KeyVaultName": {
 				"type": "string",
 				"defaultValue": "key-vault-nyc-green-taxi"
+			},
+			"p_DBName": {
+				"type": "string"
 			}
 		},
 		"annotations": []

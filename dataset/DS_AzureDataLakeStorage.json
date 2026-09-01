@@ -5,7 +5,10 @@
 			"referenceName": "LS_AzureDataLakeStorage",
 			"type": "LinkedServiceReference",
 			"parameters": {
-				"storage_name": "datalakenycgreentaxi"
+				"storage_name": {
+					"value": "@dataset().storage_name",
+					"type": "Expression"
+				}
 			}
 		},
 		"parameters": {
@@ -13,6 +16,9 @@
 				"type": "string"
 			},
 			"month": {
+				"type": "string"
+			},
+			"storage_name": {
 				"type": "string"
 			}
 		},
