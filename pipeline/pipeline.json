@@ -1,6 +1,33 @@
 {
 	"name": "pipeline",
 	"properties": {
+		"activities": [
+			{
+				"name": "LookupIngestionMetadata",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": "SELECT year, month\nFROM dbo.green_taxi_control\nWHERE enabled = 1\nORDER BY year, month",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "DS_AzureSqlTable",
+						"type": "DatasetReference"
+					}
+				}
+			}
+		],
 		"parameters": {
 			"p_StorageAccountName": {
 				"type": "string",

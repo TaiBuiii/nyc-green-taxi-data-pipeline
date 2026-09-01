@@ -1,0 +1,17 @@
+{
+	"name": "DS_AzureSqlTable",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_AzureSqlDatabase",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"db_server_name": "db-server-nyc-green-taxi",
+				"db_name": "db-nyc-green-taxi",
+				"db_user_name": "adminsql"
+			}
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": []
+	}
+}
