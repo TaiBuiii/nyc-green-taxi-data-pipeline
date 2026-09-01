@@ -1,0 +1,40 @@
+{
+	"name": "LS_AzureSqlDatabase",
+	"properties": {
+		"parameters": {
+			"db_server_name": {
+				"type": "string",
+				"defaultValue": "db-server-nyc-green-taxi"
+			},
+			"db_name": {
+				"type": "string",
+				"defaultValue": "db-nyc-green-taxi"
+			},
+			"db_user_name": {
+				"type": "string",
+				"defaultValue": "adminsql"
+			}
+		},
+		"annotations": [],
+		"type": "AzureSqlDatabase",
+		"typeProperties": {
+			"server": "@{linkedService().db_server_name}.database.windows.net",
+			"database": "@{linkedService().db_name}",
+			"encrypt": "mandatory",
+			"trustServerCertificate": false,
+			"authenticationType": "SQL",
+			"userName": "@{linkedService().db_user_name}",
+			"password": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "LS_AzureKeyVault",
+					"type": "LinkedServiceReference",
+					"parameters": {
+						"key_vault_name": "key-vault-nyc-green-taxi"
+					}
+				},
+				"secretName": "db-user-password"
+			}
+		}
+	}
+}

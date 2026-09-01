@@ -1,0 +1,16 @@
+{
+	"name": "LS_AzureKeyVault",
+	"properties": {
+		"parameters": {
+			"key_vault_name": {
+				"type": "string",
+				"defaultValue": "key-vault-nyc-green-taxi"
+			}
+		},
+		"annotations": [],
+		"type": "AzureKeyVault",
+		"typeProperties": {
+			"baseUrl": "https://@{linkedService().key_vault_name}.vault.azure.net/"
+		}
+	}
+}
