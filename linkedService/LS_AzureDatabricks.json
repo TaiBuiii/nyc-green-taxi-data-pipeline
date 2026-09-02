@@ -17,6 +17,10 @@
 			"key_vault_name": {
 				"type": "string",
 				"defaultValue": "key-vault-nyc-green-taxi"
+			},
+			"databrick_access_token_secret_name": {
+				"type": "string",
+				"defaultValue": "databricks-token"
 			}
 		},
 		"annotations": [],
@@ -35,7 +39,10 @@
 						}
 					}
 				},
-				"secretName": "databricks-token"
+				"secretName": {
+					"value": "@linkedService().databrick_access_token_secret_name",
+					"type": "Expression"
+				}
 			},
 			"newClusterNodeType": "@linkedService().cluster_node_type",
 			"newClusterNumOfWorker": "1:3",
