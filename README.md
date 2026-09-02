@@ -33,7 +33,7 @@ The pipeline follows an **ELT (Extract, Load, Transform)** process.
 ### **2.1 Azure Data Factory**
 
 Azure Data Factory (ADF) is responsible for data ingestion and pipeline orchestration. ADF retrieves processing metadata from the Azure SQL Database using a Lookup activity. The metadata table determines which year/month partitions need to be processed using the dynamic parameters. This allows the pipeline to process multiple monthly partitions using a single reusable workflow.
-![Data Architecture](documents/adf.jpg)
+![Data Architecture](documents/adf.png)
 
 ### **2.2 Azure Data Lake Storage Gen2**
 
@@ -254,51 +254,49 @@ Use Key Vault or managed identity for credentials, grant ADF access to ADLS/Data
 ```text
 nyc-green-taxi-data-pipeline/
 ├── README.md
-├── LICENSE
-├── adf/                                        # contains Azure Data Factory resources.
+├── adf/                                        # Azure Data Factory resources
 │   ├── publish_config.json
 │   ├── factory/
-│   │   └── nyc-taxi-adfs.json
+│   │   └── adf-nyc-green-taxi.json
 │   ├── linkedService/
-│   │   ├── datalakestorage.json
-│   │   ├── lookup_data.json
 │   │   ├── LS_AzureDatabricks.json
-│   │   ├── nyc_data.json
-│   │   └── nyc_metadata.json
+│   │   ├── LS_AzureDataLakeStorage.json
+│   │   ├── LS_AzureKeyVault.json
+│   │   ├── LS_AzureSqlDatabase.json
+│   │   ├── LS_RefereneData.json
+│   │   └── LS_TaxiData.json
 │   ├── dataset/
-│   │   ├── blob_storage_taxi_zone_lookup.json
-│   │   ├── blob_storage_trip_payment.json
-│   │   ├── blob_storage_trip_type.json
-│   │   ├── blob_storage_trips.json
-│   │   ├── green_taxi.json
-│   │   ├── metadata.json
-│   │   ├── taxi_zone_lookup.json
-│   │   ├── trip_payment.json
-│   │   ├── trip_type.json
-│   │   └── trips.json
-│   └── pipeline/
-│       └── pipeline.json
-├── databricks/                                
+│   │   ├── DS_AzureSqlTable.json
+│   │   ├── DS_SinkReferenceData.json
+│   │   ├── DS_SinkTripData.json
+│   │   ├── DS_SourceReferenceData.json
+│   │   └── DS_SourceTripData.json
+│   ├── pipeline/
+│   │   └── pipeline.json
+│   └── trigger/
+│       └── trigger.json
+├── databricks/                                 # Databricks transformation notebooks
 │   └── src/
-│       ├── silver/                             # cleans and standardizes source data
+│       ├── silver/                             # Silver layer - cleans and standardizes data
 │       │   ├── trip_payment.py
 │       │   ├── trip_type.py
 │       │   ├── trip_zone.py
 │       │   └── trips.py
-│       └── gold/                               # perform data modelling
+│       └── gold/                               # Gold layer - business-ready dimensional & fact tables
 │           ├── dim_payment.py
 │           ├── dim_type.py
 │           ├── dim_zone.py
 │           └── fact_trips.py
-├── documents/                                  # stores architecture and dashboard images
-│   ├── adf.jpg
+├── documents/                                  # Architecture diagrams and dashboard images
+│   ├── adf.png
 │   ├── architecture.png
 │   └── dashboard.jpg
-├── powerbi/
-└── reference_data/                             # stores the lookup CSV files used by the pipeline
-    ├── taxi_zone_lookup.csv
+├── powerbi/                                    # Power BI analytics
+│   └── dashboard.pbix
+└── reference_data/                             # Reference/lookup data files
     ├── trip_payment.csv
-    └── trip_type.csv
+    ├── trip_type.csv
+    └── trip_zone.csv
 ```
 
 
