@@ -15,7 +15,8 @@
 				"defaultValue": "Standard_DS3_v2"
 			},
 			"key_vault_name": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "key-vault-nyc-green-taxi"
 			}
 		},
 		"annotations": [],
