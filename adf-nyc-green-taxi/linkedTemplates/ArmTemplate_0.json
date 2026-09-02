@@ -1,0 +1,1130 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "adf-nyc-green-taxi"
+		},
+		"LS_AzureDataLakeStorage_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://@{linkedService().storage_name}.dfs.core.windows.net/"
+		},
+		"LS_AzureKeyVault_properties_typeProperties_baseUrl": {
+			"type": "string",
+			"defaultValue": "https://@{linkedService().key_vault_name}.vault.azure.net/"
+		},
+		"LS_RefereneData_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://raw.githubusercontent.com/TaiBuiii/nyc-green-taxi-data-pipeline/refs/heads/main/reference_data/"
+		},
+		"LS_TaxiData_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://d37ci6vzurychx.cloudfront.net/"
+		},
+		"LS_AzureSqlDatabase_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "@{linkedService().db_server_name}.database.windows.net"
+		},
+		"LS_AzureSqlDatabase_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "@{linkedService().db_name}"
+		},
+		"LS_AzureSqlDatabase_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "@{linkedService().db_user_name}"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/LS_AzureDataLakeStorage')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"parameters": {
+					"storage_name": {
+						"type": "string",
+						"defaultValue": "datalakenycgreentaxi"
+					}
+				},
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('LS_AzureDataLakeStorage_properties_typeProperties_url')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/LS_AzureKeyVault')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"parameters": {
+					"key_vault_name": {
+						"type": "string",
+						"defaultValue": "key-vault-nyc-green-taxi"
+					}
+				},
+				"annotations": [],
+				"type": "AzureKeyVault",
+				"typeProperties": {
+					"baseUrl": "[parameters('LS_AzureKeyVault_properties_typeProperties_baseUrl')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/LS_RefereneData')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "HttpServer",
+				"typeProperties": {
+					"url": "[parameters('LS_RefereneData_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": true,
+					"authenticationType": "Anonymous"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/LS_TaxiData')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "HttpServer",
+				"typeProperties": {
+					"url": "[parameters('LS_TaxiData_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": true,
+					"authenticationType": "Anonymous"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DS_SinkReferenceData')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_AzureDataLakeStorage",
+					"type": "LinkedServiceReference",
+					"parameters": {
+						"storage_name": {
+							"value": "@dataset().storage_name",
+							"type": "Expression"
+						}
+					}
+				},
+				"parameters": {
+					"folder_name": {
+						"type": "string"
+					},
+					"file_name": {
+						"type": "string"
+					},
+					"storage_name": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": {
+							"value": "@{dataset().file_name}.csv",
+							"type": "Expression"
+						},
+						"folderPath": {
+							"value": "@dataset().folder_name",
+							"type": "Expression"
+						},
+						"fileSystem": "bronze"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS_AzureDataLakeStorage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DS_SinkTripData')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_AzureDataLakeStorage",
+					"type": "LinkedServiceReference",
+					"parameters": {
+						"storage_name": {
+							"value": "@dataset().storage_name",
+							"type": "Expression"
+						}
+					}
+				},
+				"parameters": {
+					"year": {
+						"type": "string"
+					},
+					"month": {
+						"type": "string"
+					},
+					"storage_name": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": {
+							"value": "green_tripdata_@{dataset().year}-@{dataset().month}.parquet",
+							"type": "Expression"
+						},
+						"folderPath": {
+							"value": "green_taxi/year=@{dataset().year}/month=@{dataset().month}",
+							"type": "Expression"
+						},
+						"fileSystem": "bronze"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS_AzureDataLakeStorage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DS_SourceReferenceData')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_RefereneData",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"filename": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "HttpServerLocation",
+						"relativeUrl": {
+							"value": "@dataset().filename",
+							"type": "Expression"
+						}
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS_RefereneData')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DS_SourceTripData')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_TaxiData",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"year": {
+						"type": "string"
+					},
+					"month": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "HttpServerLocation",
+						"relativeUrl": {
+							"value": "trip-data/green_tripdata_@{dataset().year}-@{dataset().month}.parquet",
+							"type": "Expression"
+						}
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS_TaxiData')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/LS_AzureDatabricks')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"parameters": {
+					"databrick_workspace_url": {
+						"type": "string",
+						"defaultValue": "https://adb-7405616972863473.13.azuredatabricks.net"
+					},
+					"select_cluster": {
+						"type": "string",
+						"defaultValue": "12.2.x-scala2.12"
+					},
+					"cluster_node_type": {
+						"type": "string",
+						"defaultValue": "Standard_DS3_v2"
+					},
+					"key_vault_name": {
+						"type": "string",
+						"defaultValue": "key-vault-nyc-green-taxi"
+					},
+					"databrick_access_token_secret_name": {
+						"type": "string",
+						"defaultValue": "databricks-token"
+					}
+				},
+				"annotations": [],
+				"type": "AzureDatabricks",
+				"typeProperties": {
+					"domain": "@linkedService().databrick_workspace_url",
+					"accessToken": {
+						"type": "AzureKeyVaultSecret",
+						"store": {
+							"referenceName": "LS_AzureKeyVault",
+							"type": "LinkedServiceReference",
+							"parameters": {
+								"key_vault_name": {
+									"value": "@linkedService().key_vault_name",
+									"type": "Expression"
+								}
+							}
+						},
+						"secretName": {
+							"value": "@linkedService().databrick_access_token_secret_name",
+							"type": "Expression"
+						}
+					},
+					"newClusterNodeType": "@linkedService().cluster_node_type",
+					"newClusterNumOfWorker": "1:3",
+					"newClusterSparkEnvVars": {
+						"PYSPARK_PYTHON": "/databricks/python3/bin/python3"
+					},
+					"newClusterVersion": "@linkedService().select_cluster",
+					"clusterOption": "Autoscaling",
+					"newClusterInitScripts": []
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS_AzureKeyVault')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/LS_AzureSqlDatabase')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"parameters": {
+					"db_server_name": {
+						"type": "string",
+						"defaultValue": "db-server-nyc-green-taxi"
+					},
+					"db_name": {
+						"type": "string",
+						"defaultValue": "db-nyc-green-taxi"
+					},
+					"db_user_name": {
+						"type": "string",
+						"defaultValue": "adminsql"
+					},
+					"key_vault_name": {
+						"type": "string",
+						"defaultValue": "key-vault-nyc-green-taxi"
+					},
+					"db_password_secret_name": {
+						"type": "string",
+						"defaultValue": "db-user-password"
+					}
+				},
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"server": "[parameters('LS_AzureSqlDatabase_properties_typeProperties_server')]",
+					"database": "[parameters('LS_AzureSqlDatabase_properties_typeProperties_database')]",
+					"encrypt": "mandatory",
+					"trustServerCertificate": false,
+					"authenticationType": "SQL",
+					"userName": "[parameters('LS_AzureSqlDatabase_properties_typeProperties_userName')]",
+					"password": {
+						"type": "AzureKeyVaultSecret",
+						"store": {
+							"referenceName": "LS_AzureKeyVault",
+							"type": "LinkedServiceReference",
+							"parameters": {
+								"key_vault_name": {
+									"value": "@linkedService().key_vault_name",
+									"type": "Expression"
+								}
+							}
+						},
+						"secretName": {
+							"value": "@linkedService().db_password_secret_name",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS_AzureKeyVault')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DS_AzureSqlTable')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_AzureSqlDatabase",
+					"type": "LinkedServiceReference",
+					"parameters": {
+						"db_server_name": {
+							"value": "@dataset().database_server_name",
+							"type": "Expression"
+						},
+						"db_name": {
+							"value": "@dataset().database_name",
+							"type": "Expression"
+						},
+						"db_user_name": {
+							"value": "@dataset().database_user_name",
+							"type": "Expression"
+						},
+						"key_vault_name": {
+							"value": "@dataset().key_vault_name",
+							"type": "Expression"
+						},
+						"db_password_secret_name": {
+							"value": "@dataset().database_password_secret_name",
+							"type": "Expression"
+						}
+					}
+				},
+				"parameters": {
+					"database_server_name": {
+						"type": "string"
+					},
+					"database_name": {
+						"type": "string"
+					},
+					"database_user_name": {
+						"type": "string"
+					},
+					"key_vault_name": {
+						"type": "string"
+					},
+					"database_password_secret_name": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS_AzureSqlDatabase')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pipeline')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Lookup Ingestion Metadata",
+						"description": "",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderQuery": "SELECT year, month\nFROM dbo.green_taxi_control\nWHERE enabled = 1\nORDER BY year, month",
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"dataset": {
+								"referenceName": "DS_AzureSqlTable",
+								"type": "DatasetReference",
+								"parameters": {
+									"database_server_name": {
+										"value": "@pipeline().parameters.p_DatabaseServerName",
+										"type": "Expression"
+									},
+									"database_name": {
+										"value": "@pipeline().parameters.p_DatabaseName",
+										"type": "Expression"
+									},
+									"database_user_name": {
+										"value": "@pipeline().parameters.p_DatabaseUserName",
+										"type": "Expression"
+									},
+									"key_vault_name": {
+										"value": "@pipeline().parameters.p_KeyVaultName",
+										"type": "Expression"
+									},
+									"database_password_secret_name": {
+										"value": "@pipeline().parameters.kv_DatabasePasswordSecretName",
+										"type": "Expression"
+									}
+								}
+							},
+							"firstRowOnly": false
+						}
+					},
+					{
+						"name": "For Each Year And Month Bronze",
+						"type": "ForEach",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
+						"dependsOn": [
+							{
+								"activity": "Lookup Ingestion Metadata",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('Lookup Ingestion Metadata').output.value",
+								"type": "Expression"
+							},
+							"isSequential": true,
+							"activities": [
+								{
+									"name": "Copy Raw Trip Data",
+									"type": "Copy",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "ParquetSource",
+											"storeSettings": {
+												"type": "HttpReadSettings",
+												"requestMethod": "GET"
+											},
+											"formatSettings": {
+												"type": "ParquetReadSettings"
+											}
+										},
+										"sink": {
+											"type": "ParquetSink",
+											"storeSettings": {
+												"type": "AzureBlobFSWriteSettings"
+											},
+											"formatSettings": {
+												"type": "ParquetWriteSettings"
+											}
+										},
+										"enableStaging": false,
+										"translator": {
+											"type": "TabularTranslator",
+											"typeConversion": true,
+											"typeConversionSettings": {
+												"allowDataTruncation": true,
+												"treatBooleanAsNumber": false
+											}
+										}
+									},
+									"inputs": [
+										{
+											"referenceName": "DS_SourceTripData",
+											"type": "DatasetReference",
+											"parameters": {
+												"year": "@item().year",
+												"month": {
+													"value": "@item().month",
+													"type": "Expression"
+												}
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "DS_SinkTripData",
+											"type": "DatasetReference",
+											"parameters": {
+												"year": "@item().year",
+												"month": "@item().month",
+												"storage_name": {
+													"value": "@pipeline().parameters.p_DatabaseName",
+													"type": "Expression"
+												}
+											}
+										}
+									]
+								}
+							]
+						}
+					},
+					{
+						"name": "For Each Year And Month Silver",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "For Each Year And Month Bronze",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "Lookup Ingestion Metadata",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "For Each Files Bronze",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('Lookup Ingestion Metadata').output.value",
+								"type": "Expression"
+							},
+							"isSequential": true,
+							"activities": [
+								{
+									"name": "Transform Silver Trip Data",
+									"type": "DatabricksSparkPython",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"pythonFile": {
+											"value": "/Workspace/Repos/@{pipeline().parameters.p_UserAccountName}/nyc-green-taxi-data-pipeline/databricks/src/silver/trips.py",
+											"type": "Expression"
+										},
+										"parameters": [
+											"year",
+											"month"
+										]
+									},
+									"linkedServiceName": {
+										"referenceName": "LS_AzureDatabricks",
+										"type": "LinkedServiceReference",
+										"parameters": {
+											"databrick_workspace_url": {
+												"value": "@pipeline().parameters.p_DatabrickWorkspaceURL",
+												"type": "Expression"
+											},
+											"select_cluster": {
+												"value": "@pipeline().parameters.p_SelectCluster",
+												"type": "Expression"
+											},
+											"cluster_node_type": {
+												"value": "@pipeline().parameters.p_ClusterNodeType",
+												"type": "Expression"
+											},
+											"key_vault_name": {
+												"value": "@pipeline().parameters.p_KeyVaultName",
+												"type": "Expression"
+											},
+											"databrick_access_token_secret_name": {
+												"value": "@pipeline().parameters.kv_DatabrickAccessTokenSecretName",
+												"type": "Expression"
+											}
+										}
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "For Each Files Bronze",
+						"type": "ForEach",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@split('trip_zone,trip_payment,trip_type', ',')",
+								"type": "Expression"
+							},
+							"isSequential": true,
+							"activities": [
+								{
+									"name": "Copy Reference Data Bronze",
+									"type": "Copy",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "DelimitedTextSource",
+											"storeSettings": {
+												"type": "HttpReadSettings",
+												"requestMethod": "GET"
+											},
+											"formatSettings": {
+												"type": "DelimitedTextReadSettings"
+											}
+										},
+										"sink": {
+											"type": "DelimitedTextSink",
+											"storeSettings": {
+												"type": "AzureBlobFSWriteSettings"
+											},
+											"formatSettings": {
+												"type": "DelimitedTextWriteSettings",
+												"quoteAllText": true,
+												"fileExtension": ".txt"
+											}
+										},
+										"enableStaging": false,
+										"translator": {
+											"type": "TabularTranslator",
+											"typeConversion": true,
+											"typeConversionSettings": {
+												"allowDataTruncation": true,
+												"treatBooleanAsNumber": false
+											}
+										}
+									},
+									"inputs": [
+										{
+											"referenceName": "DS_SourceReferenceData",
+											"type": "DatasetReference",
+											"parameters": {
+												"filename": {
+													"value": "@{item()}.csv",
+													"type": "Expression"
+												}
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "DS_SinkReferenceData",
+											"type": "DatasetReference",
+											"parameters": {
+												"folder_name": {
+													"value": "@item()",
+													"type": "Expression"
+												},
+												"file_name": {
+													"value": "@item()",
+													"type": "Expression"
+												},
+												"storage_name": {
+													"value": "@pipeline().parameters.p_DatabaseName",
+													"type": "Expression"
+												}
+											}
+										}
+									]
+								}
+							]
+						}
+					},
+					{
+						"name": "For Each Files Silver",
+						"type": "ForEach",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
+						"dependsOn": [
+							{
+								"activity": "For Each Files Bronze",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@split('trip_zone,trip_payment,trip_type', ',')",
+								"type": "Expression"
+							},
+							"isSequential": true,
+							"activities": [
+								{
+									"name": "Transform Silver Reference Data",
+									"type": "DatabricksSparkPython",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"pythonFile": {
+											"value": "/Workspace/Repos/@{pipeline().parameters.p_UserAccountName}/nyc-green-taxi-data-pipeline/databricks/src/silver/@{item()}.py",
+											"type": "Expression"
+										},
+										"parameters": []
+									},
+									"linkedServiceName": {
+										"referenceName": "LS_AzureDatabricks",
+										"type": "LinkedServiceReference",
+										"parameters": {
+											"databrick_workspace_url": {
+												"value": "@pipeline().parameters.p_DatabrickWorkspaceURL",
+												"type": "Expression"
+											},
+											"select_cluster": {
+												"value": "@pipeline().parameters.p_SelectCluster",
+												"type": "Expression"
+											},
+											"cluster_node_type": {
+												"value": "@pipeline().parameters.p_ClusterNodeType",
+												"type": "Expression"
+											},
+											"key_vault_name": {
+												"value": "@pipeline().parameters.p_KeyVaultName",
+												"type": "Expression"
+											},
+											"databrick_access_token_secret_name": {
+												"value": "@pipeline().parameters.kv_DatabrickAccessTokenSecretName",
+												"type": "Expression"
+											}
+										}
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "For Each Files Gold",
+						"type": "ForEach",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
+						"dependsOn": [
+							{
+								"activity": "For Each Files Silver",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@split('dim_zone,dim_payment,dim_type', ',')",
+								"type": "Expression"
+							},
+							"isSequential": true,
+							"activities": [
+								{
+									"name": "Transform Gold Reference Data",
+									"type": "DatabricksSparkPython",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"pythonFile": {
+											"value": "/Workspace/Repos/@{pipeline().parameters.p_UserAccountName}/nyc-green-taxi-data-pipeline/databricks/src/gold/@{item()}.py",
+											"type": "Expression"
+										},
+										"parameters": []
+									},
+									"linkedServiceName": {
+										"referenceName": "LS_AzureDatabricks",
+										"type": "LinkedServiceReference",
+										"parameters": {
+											"databrick_workspace_url": {
+												"value": "@pipeline().parameters.p_DatabrickWorkspaceURL",
+												"type": "Expression"
+											},
+											"select_cluster": {
+												"value": "@pipeline().parameters.p_SelectCluster",
+												"type": "Expression"
+											},
+											"cluster_node_type": {
+												"value": "@pipeline().parameters.p_ClusterNodeType",
+												"type": "Expression"
+											},
+											"key_vault_name": {
+												"value": "@pipeline().parameters.p_KeyVaultName",
+												"type": "Expression"
+											},
+											"databrick_access_token_secret_name": {
+												"value": "@pipeline().parameters.kv_DatabrickAccessTokenSecretName",
+												"type": "Expression"
+											}
+										}
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "For Each Year And Month Gold",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "Lookup Ingestion Metadata",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "For Each Year And Month Silver",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "For Each Files Silver",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('Lookup Ingestion Metadata').output.value",
+								"type": "Expression"
+							},
+							"isSequential": true,
+							"activities": [
+								{
+									"name": "Transform Gold Trip Data",
+									"type": "DatabricksSparkPython",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"pythonFile": {
+											"value": "/Workspace/Repos/@{pipeline().parameters.p_UserAccountName}/nyc-green-taxi-data-pipeline/databricks/src/gold/fact_trips.py",
+											"type": "Expression"
+										},
+										"parameters": [
+											"year",
+											"month"
+										]
+									},
+									"linkedServiceName": {
+										"referenceName": "LS_AzureDatabricks",
+										"type": "LinkedServiceReference",
+										"parameters": {
+											"databrick_workspace_url": {
+												"value": "@pipeline().parameters.p_DatabrickWorkspaceURL",
+												"type": "Expression"
+											},
+											"select_cluster": {
+												"value": "@pipeline().parameters.p_SelectCluster",
+												"type": "Expression"
+											},
+											"cluster_node_type": {
+												"value": "@pipeline().parameters.p_ClusterNodeType",
+												"type": "Expression"
+											},
+											"key_vault_name": {
+												"value": "@pipeline().parameters.p_KeyVaultName",
+												"type": "Expression"
+											},
+											"databrick_access_token_secret_name": {
+												"value": "@pipeline().parameters.kv_DatabrickAccessTokenSecretName",
+												"type": "Expression"
+											}
+										}
+									}
+								},
+								{
+									"name": "Set Enable To False",
+									"type": "Script",
+									"dependsOn": [
+										{
+											"activity": "Transform Gold Trip Data",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"linkedServiceName": {
+										"referenceName": "LS_AzureSqlDatabase",
+										"type": "LinkedServiceReference",
+										"parameters": {
+											"db_server_name": {
+												"value": "@pipeline().parameters.p_DatabaseServerName",
+												"type": "Expression"
+											},
+											"db_name": {
+												"value": "@pipeline().parameters.p_DatabaseName",
+												"type": "Expression"
+											},
+											"db_user_name": {
+												"value": "@pipeline().parameters.p_DatabaseUserName",
+												"type": "Expression"
+											},
+											"key_vault_name": {
+												"value": "@pipeline().parameters.p_KeyVaultName",
+												"type": "Expression"
+											},
+											"db_password_secret_name": {
+												"value": "@pipeline().parameters.kv_DatabasePasswordSecretName",
+												"type": "Expression"
+											}
+										}
+									},
+									"typeProperties": {
+										"scripts": [
+											{
+												"type": "Query",
+												"text": {
+													"value": "UPDATE dbo.green_taxi_control\r\nSET enabled = 0\r\nWHERE year = @{item().year} AND month @{item().month}",
+													"type": "Expression"
+												}
+											}
+										],
+										"scriptBlockExecutionTimeout": "02:00:00"
+									}
+								}
+							]
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"p_StorageAccountName": {
+						"type": "string",
+						"defaultValue": "datalakenycgreentaxi"
+					},
+					"p_KeyVaultName": {
+						"type": "string",
+						"defaultValue": "key-vault-nyc-green-taxi"
+					},
+					"p_DatabaseName": {
+						"type": "string",
+						"defaultValue": "db-nyc-green-taxi"
+					},
+					"p_DatabrickWorkspaceURL": {
+						"type": "string",
+						"defaultValue": "https://adb-7405616972863473.13.azuredatabricks.net"
+					},
+					"p_SelectCluster": {
+						"type": "string",
+						"defaultValue": "12.2.x-scala2.12"
+					},
+					"p_ClusterNodeType": {
+						"type": "string",
+						"defaultValue": "Standard_DS3_v2"
+					},
+					"p_UserAccountName": {
+						"type": "string",
+						"defaultValue": "24521543@gm.uit.edu.vn"
+					},
+					"p_DatabaseServerName": {
+						"type": "string",
+						"defaultValue": "db-server-nyc-green-taxi"
+					},
+					"p_DatabaseUserName": {
+						"type": "string",
+						"defaultValue": "adminsql"
+					},
+					"kv_DatabrickAccessTokenSecretName": {
+						"type": "string",
+						"defaultValue": "databricks-token"
+					},
+					"kv_DatabasePasswordSecretName": {
+						"type": "string",
+						"defaultValue": "db-user-password"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/DS_AzureSqlTable')]",
+				"[concat(variables('factoryId'), '/datasets/DS_SourceTripData')]",
+				"[concat(variables('factoryId'), '/datasets/DS_SinkTripData')]",
+				"[concat(variables('factoryId'), '/linkedServices/LS_AzureDatabricks')]",
+				"[concat(variables('factoryId'), '/datasets/DS_SourceReferenceData')]",
+				"[concat(variables('factoryId'), '/datasets/DS_SinkReferenceData')]",
+				"[concat(variables('factoryId'), '/linkedServices/LS_AzureSqlDatabase')]"
+			]
+		}
+	]
+}

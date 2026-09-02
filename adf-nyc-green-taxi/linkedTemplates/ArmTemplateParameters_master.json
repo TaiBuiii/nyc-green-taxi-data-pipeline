@@ -1,0 +1,36 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "adf-nyc-green-taxi"
+		},
+		"LS_AzureDataLakeStorage_properties_typeProperties_url": {
+			"value": "https://@{linkedService().storage_name}.dfs.core.windows.net/"
+		},
+		"LS_AzureKeyVault_properties_typeProperties_baseUrl": {
+			"value": "https://@{linkedService().key_vault_name}.vault.azure.net/"
+		},
+		"LS_AzureSqlDatabase_properties_typeProperties_server": {
+			"value": "@{linkedService().db_server_name}.database.windows.net"
+		},
+		"LS_AzureSqlDatabase_properties_typeProperties_database": {
+			"value": "@{linkedService().db_name}"
+		},
+		"LS_AzureSqlDatabase_properties_typeProperties_userName": {
+			"value": "@{linkedService().db_user_name}"
+		},
+		"LS_RefereneData_properties_typeProperties_url": {
+			"value": "https://raw.githubusercontent.com/TaiBuiii/nyc-green-taxi-data-pipeline/refs/heads/main/reference_data/"
+		},
+		"LS_TaxiData_properties_typeProperties_url": {
+			"value": "https://d37ci6vzurychx.cloudfront.net/"
+		},
+		"containerUri": {
+			"value": ""
+		},
+		"containerSasToken": {
+			"value": ""
+		}
+	}
+}
