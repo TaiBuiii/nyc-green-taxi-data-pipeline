@@ -13,6 +13,14 @@
 			"db_user_name": {
 				"type": "string",
 				"defaultValue": "adminsql"
+			},
+			"key_vault_name": {
+				"type": "string",
+				"defaultValue": "key-vault-nyc-green-taxi"
+			},
+			"db_password_secret_name": {
+				"type": "string",
+				"defaultValue": "db-user-password"
 			}
 		},
 		"annotations": [],
@@ -30,10 +38,16 @@
 					"referenceName": "LS_AzureKeyVault",
 					"type": "LinkedServiceReference",
 					"parameters": {
-						"key_vault_name": "key-vault-nyc-green-taxi"
+						"key_vault_name": {
+							"value": "@linkedService().key_vault_name",
+							"type": "Expression"
+						}
 					}
 				},
-				"secretName": "db-user-password"
+				"secretName": {
+					"value": "@linkedService().db_password_secret_name",
+					"type": "Expression"
+				}
 			}
 		}
 	}

@@ -1,0 +1,44 @@
+{
+	"name": "DS_SinkTripData",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_AzureDataLakeStorage",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"storage_name": {
+					"value": "@dataset().storage_name",
+					"type": "Expression"
+				}
+			}
+		},
+		"parameters": {
+			"year": {
+				"type": "string"
+			},
+			"month": {
+				"type": "string"
+			},
+			"storage_name": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": {
+					"value": "green_tripdata_@{dataset().year}-@{dataset().month}.parquet",
+					"type": "Expression"
+				},
+				"folderPath": {
+					"value": "green_taxi/year=@{dataset().year}/month=@{dataset().month}",
+					"type": "Expression"
+				},
+				"fileSystem": "bronze"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": []
+	}
+}

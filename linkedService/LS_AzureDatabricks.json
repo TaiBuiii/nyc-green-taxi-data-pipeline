@@ -13,6 +13,14 @@
 			"cluster_node_type": {
 				"type": "string",
 				"defaultValue": "Standard_DS3_v2"
+			},
+			"key_vault_name": {
+				"type": "string",
+				"defaultValue": "key-vault-nyc-green-taxi"
+			},
+			"databrick_access_token_secret_name": {
+				"type": "string",
+				"defaultValue": "databricks-token"
 			}
 		},
 		"annotations": [],
@@ -25,10 +33,16 @@
 					"referenceName": "LS_AzureKeyVault",
 					"type": "LinkedServiceReference",
 					"parameters": {
-						"key_vault_name": "key-vault-nyc-green-taxi"
+						"key_vault_name": {
+							"value": "@linkedService().key_vault_name",
+							"type": "Expression"
+						}
 					}
 				},
-				"secretName": "databricks-token"
+				"secretName": {
+					"value": "@linkedService().databrick_access_token_secret_name",
+					"type": "Expression"
+				}
 			},
 			"newClusterNodeType": "@linkedService().cluster_node_type",
 			"newClusterNumOfWorker": "1:3",

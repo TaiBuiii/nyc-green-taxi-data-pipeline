@@ -5,9 +5,43 @@
 			"referenceName": "LS_AzureSqlDatabase",
 			"type": "LinkedServiceReference",
 			"parameters": {
-				"db_server_name": "db-server-nyc-green-taxi",
-				"db_name": "db-nyc-green-taxi",
-				"db_user_name": "adminsql"
+				"db_server_name": {
+					"value": "@dataset().database_server_name",
+					"type": "Expression"
+				},
+				"db_name": {
+					"value": "@dataset().database_name",
+					"type": "Expression"
+				},
+				"db_user_name": {
+					"value": "@dataset().database_user_name",
+					"type": "Expression"
+				},
+				"key_vault_name": {
+					"value": "@dataset().key_vault_name",
+					"type": "Expression"
+				},
+				"db_password_secret_name": {
+					"value": "@dataset().database_password_secret_name",
+					"type": "Expression"
+				}
+			}
+		},
+		"parameters": {
+			"database_server_name": {
+				"type": "string"
+			},
+			"database_name": {
+				"type": "string"
+			},
+			"database_user_name": {
+				"type": "string"
+			},
+			"key_vault_name": {
+				"type": "string"
+			},
+			"database_password_secret_name": {
+				"type": "string"
 			}
 		},
 		"annotations": [],
