@@ -29,15 +29,7 @@
 					}
 				},
 				"secretName": "databricks-token"
-			},
-			"newClusterNodeType": "@linkedService().cluster_node_type",
-			"newClusterNumOfWorker": "1:3",
-			"newClusterSparkEnvVars": {
-				"PYSPARK_PYTHON": "/databricks/python3/bin/python3"
-			},
-			"newClusterVersion": "@linkedService().select_cluster",
-			"clusterOption": "Autoscaling",
-			"newClusterInitScripts": []
+			}
 		}
 	}
 }
