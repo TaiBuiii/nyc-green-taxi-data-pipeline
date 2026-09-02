@@ -6,6 +6,8 @@
 				"name": "Lookup Ingestion Metadata",
 				"description": "",
 				"type": "Lookup",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
@@ -30,8 +32,10 @@
 				}
 			},
 			{
-				"name": "For Each Year And Month",
+				"name": "For Each Year And Month Bronze",
 				"type": "ForEach",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Lookup Ingestion Metadata",
@@ -111,7 +115,7 @@
 										"year": "@item().year",
 										"month": "@item().month",
 										"storage_name": {
-											"value": "@pipeline().parameters.p_DBName",
+											"value": "@pipeline().parameters.p_DatabaseName",
 											"type": "Expression"
 										}
 									}
@@ -122,11 +126,19 @@
 				}
 			},
 			{
-				"name": "For Each Year And Month_copy1",
+				"name": "For Each Year And Month Silver",
 				"type": "ForEach",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
-						"activity": "For Each Year And Month",
+						"activity": "For Each Year And Month Bronze",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Lookup Ingestion Metadata",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -141,7 +153,60 @@
 					"isSequential": true,
 					"activities": [
 						{
-							"name": "Copy Raw Trip Data_copy1",
+							"name": "Transform Silver Trip Data",
+							"type": "DatabricksSparkPython",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"pythonFile": "databricks/src/silver/trips.py",
+								"parameters": [
+									"year",
+									"month"
+								]
+							},
+							"linkedServiceName": {
+								"referenceName": "LS_AzureDatabricks",
+								"type": "LinkedServiceReference",
+								"parameters": {
+									"databrick_workspace_url": {
+										"value": "@pipeline().parameters.p_DatabrickWorkspaceURL",
+										"type": "Expression"
+									},
+									"select_cluster": {
+										"value": "@pipeline().parameters.p_SelectCluster",
+										"type": "Expression"
+									},
+									"cluster_node_type": {
+										"value": "@pipeline().parameters.p_ClusterNodeType",
+										"type": "Expression"
+									}
+								}
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "For Each Files",
+				"type": "ForEach",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@split('trip_zone,trip_payment,trip_type', ',')",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "Copy Reference Data Bronze",
 							"type": "Copy",
 							"dependsOn": [],
 							"policy": {
@@ -154,22 +219,24 @@
 							"userProperties": [],
 							"typeProperties": {
 								"source": {
-									"type": "ParquetSource",
+									"type": "DelimitedTextSource",
 									"storeSettings": {
 										"type": "HttpReadSettings",
 										"requestMethod": "GET"
 									},
 									"formatSettings": {
-										"type": "ParquetReadSettings"
+										"type": "DelimitedTextReadSettings"
 									}
 								},
 								"sink": {
-									"type": "ParquetSink",
+									"type": "DelimitedTextSink",
 									"storeSettings": {
 										"type": "AzureBlobFSWriteSettings"
 									},
 									"formatSettings": {
-										"type": "ParquetWriteSettings"
+										"type": "DelimitedTextWriteSettings",
+										"quoteAllText": true,
+										"fileExtension": ".txt"
 									}
 								},
 								"enableStaging": false,
@@ -184,12 +251,11 @@
 							},
 							"inputs": [
 								{
-									"referenceName": "DS_TaxiData",
+									"referenceName": "DS_SourceReferenceData",
 									"type": "DatasetReference",
 									"parameters": {
-										"year": "@item().year",
-										"month": {
-											"value": "@item().month",
+										"filename": {
+											"value": "@{item()}.csv",
 											"type": "Expression"
 										}
 									}
@@ -197,11 +263,21 @@
 							],
 							"outputs": [
 								{
-									"referenceName": "DS_AzureDataLakeStorage",
+									"referenceName": "DS_SinkReferenceData",
 									"type": "DatasetReference",
 									"parameters": {
-										"year": "@item().year",
-										"month": "@item().month"
+										"folder_name": {
+											"value": "@item()",
+											"type": "Expression"
+										},
+										"file_name": {
+											"value": "@item()",
+											"type": "Expression"
+										},
+										"storage_name": {
+											"value": "@pipeline().parameters.p_DatabaseName",
+											"type": "Expression"
+										}
 									}
 								}
 							]
@@ -219,8 +295,21 @@
 				"type": "string",
 				"defaultValue": "key-vault-nyc-green-taxi"
 			},
-			"p_DBName": {
-				"type": "string"
+			"p_DatabaseName": {
+				"type": "string",
+				"defaultValue": "datalakenycgreentaxi"
+			},
+			"p_DatabrickWorkspaceURL": {
+				"type": "string",
+				"defaultValue": "https://adb-7405616972863473.13.azuredatabricks.net"
+			},
+			"p_SelectCluster": {
+				"type": "string",
+				"defaultValue": "12.2.x-scala2.12"
+			},
+			"p_ClusterNodeType": {
+				"type": "string",
+				"defaultValue": "Standard_DS3_v2"
 			}
 		},
 		"annotations": []
