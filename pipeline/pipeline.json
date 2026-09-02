@@ -54,8 +54,6 @@
 			{
 				"name": "For Each Year And Month Bronze",
 				"type": "ForEach",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Lookup Ingestion Metadata",
@@ -231,8 +229,6 @@
 			{
 				"name": "For Each Files Bronze",
 				"type": "ForEach",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"userProperties": [],
 				"typeProperties": {
@@ -325,8 +321,6 @@
 			{
 				"name": "For Each Files Silver",
 				"type": "ForEach",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "For Each Files Bronze",
@@ -359,7 +353,8 @@
 								"pythonFile": {
 									"value": "/Workspace/Repos/@{pipeline().parameters.p_UserAccountName}/nyc-green-taxi-data-pipeline/databricks/src/silver/@{item()}.py",
 									"type": "Expression"
-								}
+								},
+								"parameters": []
 							},
 							"linkedServiceName": {
 								"referenceName": "LS_AzureDatabricks",
@@ -394,8 +389,6 @@
 			{
 				"name": "For Each Files Gold",
 				"type": "ForEach",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "For Each Files Silver",
@@ -428,7 +421,8 @@
 								"pythonFile": {
 									"value": "/Workspace/Repos/@{pipeline().parameters.p_UserAccountName}/nyc-green-taxi-data-pipeline/databricks/src/gold/@{item()}.py",
 									"type": "Expression"
-								}
+								},
+								"parameters": []
 							},
 							"linkedServiceName": {
 								"referenceName": "LS_AzureDatabricks",
