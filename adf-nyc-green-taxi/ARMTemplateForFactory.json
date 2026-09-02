@@ -98,8 +98,6 @@
 					{
 						"name": "For Each Year And Month Bronze",
 						"type": "ForEach",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "Lookup Ingestion Metadata",
@@ -275,8 +273,6 @@
 					{
 						"name": "For Each Files Bronze",
 						"type": "ForEach",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [],
 						"userProperties": [],
 						"typeProperties": {
@@ -369,8 +365,6 @@
 					{
 						"name": "For Each Files Silver",
 						"type": "ForEach",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "For Each Files Bronze",
@@ -439,8 +433,6 @@
 					{
 						"name": "For Each Files Gold",
 						"type": "ForEach",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "For Each Files Silver",
@@ -1122,6 +1114,26 @@
 					"url": "[parameters('LS_TaxiData_properties_typeProperties_url')]",
 					"enableServerCertificateValidation": true,
 					"authenticationType": "Anonymous"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/trigger')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Stopped",
+				"pipelines": [],
+				"type": "ScheduleTrigger",
+				"typeProperties": {
+					"recurrence": {
+						"frequency": "Month",
+						"interval": 1,
+						"startTime": "2026-09-02T04:36:00",
+						"timeZone": "SE Asia Standard Time"
+					}
 				}
 			},
 			"dependsOn": []
