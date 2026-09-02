@@ -1,5 +1,5 @@
 {
-	"name": "DS_TaxiData",
+	"name": "DS_SourceTripData",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "LS_TaxiData",

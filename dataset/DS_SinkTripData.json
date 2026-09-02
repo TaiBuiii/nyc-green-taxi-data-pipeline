@@ -1,5 +1,5 @@
 {
-	"name": "DS_AzureDataLakeStorage",
+	"name": "DS_SinkTripData",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "LS_AzureDataLakeStorage",
