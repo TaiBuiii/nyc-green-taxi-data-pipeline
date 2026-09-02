@@ -17,6 +17,10 @@
 			"key_vault_name": {
 				"type": "string",
 				"defaultValue": "key-vault-nyc-green-taxi"
+			},
+			"db_password_secret_name": {
+				"type": "string",
+				"defaultValue": "db-user-password"
 			}
 		},
 		"annotations": [],
