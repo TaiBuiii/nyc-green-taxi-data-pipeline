@@ -204,11 +204,11 @@
 										"value": "@pipeline().parameters.p_KeyVaultName",
 										"type": "Expression"
 									},
-									"databrick_workspace": {
+									"databricks_workspace": {
 										"value": "@pipeline().parameters.p_DatabrickWorkspaceURL",
 										"type": "Expression"
 									},
-									"databrick_access_token_name": {
+									"databricks_access_token_name": {
 										"value": "@pipeline().parameters.kv_DatabrickAccessTokenSecretName",
 										"type": "Expression"
 									},
@@ -360,11 +360,11 @@
 										"value": "@pipeline().parameters.p_KeyVaultName",
 										"type": "Expression"
 									},
-									"databrick_workspace": {
-										"value": "@pipeline().parameters.p_DatabrickWorkspaceURL",
+									"databricks_workspace": {
+										"value": "@pipeline().parameters.p_DatabrickWorkspaceURL\n",
 										"type": "Expression"
 									},
-									"databrick_access_token_name": {
+									"databricks_access_token_name": {
 										"value": "@pipeline().parameters.kv_DatabrickAccessTokenSecretName",
 										"type": "Expression"
 									},
@@ -421,11 +421,8 @@
 										"value": "@pipeline().parameters.p_KeyVaultName",
 										"type": "Expression"
 									},
-									"databrick_workspace": {
-										"value": "@pipeline().parameters.p_DatabrickWorkspaceURL",
-										"type": "Expression"
-									},
-									"databrick_access_token_name": {
+									"databricks_workspace": "@pipeline().parameters.p_DatabrickWorkspaceURL",
+									"databricks_access_token_name": {
 										"value": "@pipeline().parameters.kv_DatabrickAccessTokenSecretName",
 										"type": "Expression"
 									},
@@ -497,11 +494,11 @@
 										"value": "@pipeline().parameters.p_KeyVaultName",
 										"type": "Expression"
 									},
-									"databrick_workspace": {
+									"databricks_workspace": {
 										"value": "@pipeline().parameters.p_DatabrickWorkspaceURL",
 										"type": "Expression"
 									},
-									"databrick_access_token_name": {
+									"databricks_access_token_name": {
 										"value": "@pipeline().parameters.kv_DatabrickAccessTokenSecretName",
 										"type": "Expression"
 									},
