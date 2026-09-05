@@ -4,7 +4,7 @@
 		"parameters": {
 			"key_vault_name": {
 				"type": "string",
-				"defaultValue": "key-vault-nyc-green-taxi"
+				"defaultValue": "keyvault-nyc-taxi"
 			}
 		},
 		"annotations": [],
