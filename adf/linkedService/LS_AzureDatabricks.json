@@ -6,14 +6,6 @@
 				"type": "string",
 				"defaultValue": "https://adb-7405616972863473.13.azuredatabricks.net"
 			},
-			"select_cluster": {
-				"type": "string",
-				"defaultValue": "12.2.x-scala2.12"
-			},
-			"cluster_node_type": {
-				"type": "string",
-				"defaultValue": "Standard_DS3_v2"
-			},
 			"key_vault_name": {
 				"type": "string",
 				"defaultValue": "key-vault-nyc-green-taxi"
@@ -21,6 +13,10 @@
 			"databrick_access_token_secret_name": {
 				"type": "string",
 				"defaultValue": "databricks-token"
+			},
+			"cluster_id": {
+				"type": "string",
+				"defaultValue": "0905-034139-trfn50gy"
 			}
 		},
 		"annotations": [],
@@ -44,14 +40,7 @@
 					"type": "Expression"
 				}
 			},
-			"newClusterNodeType": "@linkedService().cluster_node_type",
-			"newClusterNumOfWorker": "1:3",
-			"newClusterSparkEnvVars": {
-				"PYSPARK_PYTHON": "/databricks/python3/bin/python3"
-			},
-			"newClusterVersion": "@linkedService().select_cluster",
-			"clusterOption": "Autoscaling",
-			"newClusterInitScripts": []
+			"existingClusterId": "@linkedService().cluster_id"
 		}
 	}
 }
