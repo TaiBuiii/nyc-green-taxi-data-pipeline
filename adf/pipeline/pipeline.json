@@ -204,20 +204,16 @@
 										"value": "@pipeline().parameters.p_DatabrickWorkspaceURL",
 										"type": "Expression"
 									},
-									"select_cluster": {
-										"value": "@pipeline().parameters.p_SelectCluster",
-										"type": "Expression"
-									},
-									"cluster_node_type": {
-										"value": "@pipeline().parameters.p_ClusterNodeType",
-										"type": "Expression"
-									},
 									"key_vault_name": {
 										"value": "@pipeline().parameters.p_KeyVaultName",
 										"type": "Expression"
 									},
 									"databrick_access_token_secret_name": {
 										"value": "@pipeline().parameters.kv_DatabrickAccessTokenSecretName",
+										"type": "Expression"
+									},
+									"cluster_id": {
+										"value": "@pipeline().parameters.p_ClusterId",
 										"type": "Expression"
 									}
 								}
@@ -364,14 +360,6 @@
 										"value": "@pipeline().parameters.p_DatabrickWorkspaceURL",
 										"type": "Expression"
 									},
-									"select_cluster": {
-										"value": "@pipeline().parameters.p_SelectCluster",
-										"type": "Expression"
-									},
-									"cluster_node_type": {
-										"value": "@pipeline().parameters.p_ClusterNodeType",
-										"type": "Expression"
-									},
 									"key_vault_name": {
 										"value": "@pipeline().parameters.p_KeyVaultName",
 										"type": "Expression"
@@ -379,7 +367,8 @@
 									"databrick_access_token_secret_name": {
 										"value": "@pipeline().parameters.kv_DatabrickAccessTokenSecretName",
 										"type": "Expression"
-									}
+									},
+									"cluster_id": "@pipeline().parameters.p_ClusterId"
 								}
 							}
 						}
@@ -432,14 +421,6 @@
 										"value": "@pipeline().parameters.p_DatabrickWorkspaceURL",
 										"type": "Expression"
 									},
-									"select_cluster": {
-										"value": "@pipeline().parameters.p_SelectCluster",
-										"type": "Expression"
-									},
-									"cluster_node_type": {
-										"value": "@pipeline().parameters.p_ClusterNodeType",
-										"type": "Expression"
-									},
 									"key_vault_name": {
 										"value": "@pipeline().parameters.p_KeyVaultName",
 										"type": "Expression"
@@ -447,7 +428,8 @@
 									"databrick_access_token_secret_name": {
 										"value": "@pipeline().parameters.kv_DatabrickAccessTokenSecretName",
 										"type": "Expression"
-									}
+									},
+									"cluster_id": "@pipeline().parameters.p_ClusterId"
 								}
 							}
 						}
@@ -515,14 +497,6 @@
 										"value": "@pipeline().parameters.p_DatabrickWorkspaceURL",
 										"type": "Expression"
 									},
-									"select_cluster": {
-										"value": "@pipeline().parameters.p_SelectCluster",
-										"type": "Expression"
-									},
-									"cluster_node_type": {
-										"value": "@pipeline().parameters.p_ClusterNodeType",
-										"type": "Expression"
-									},
 									"key_vault_name": {
 										"value": "@pipeline().parameters.p_KeyVaultName",
 										"type": "Expression"
@@ -530,7 +504,8 @@
 									"databrick_access_token_secret_name": {
 										"value": "@pipeline().parameters.kv_DatabrickAccessTokenSecretName",
 										"type": "Expression"
-									}
+									},
+									"cluster_id": "@pipeline().parameters.p_ClusterId"
 								}
 							}
 						},
@@ -599,35 +574,27 @@
 		"parameters": {
 			"p_StorageAccountName": {
 				"type": "string",
-				"defaultValue": "datalakenycgreentaxi"
+				"defaultValue": "gen2nyctaxi"
 			},
 			"p_KeyVaultName": {
 				"type": "string",
-				"defaultValue": "key-vault-nyc-green-taxi"
+				"defaultValue": "keyvault-nyc-taxi"
 			},
 			"p_DatabaseName": {
 				"type": "string",
-				"defaultValue": "db-nyc-green-taxi"
+				"defaultValue": "db-nyc-taxi"
 			},
 			"p_DatabrickWorkspaceURL": {
 				"type": "string",
-				"defaultValue": "https://adb-7405616972863473.13.azuredatabricks.net"
-			},
-			"p_SelectCluster": {
-				"type": "string",
-				"defaultValue": "12.2.x-scala2.12"
-			},
-			"p_ClusterNodeType": {
-				"type": "string",
-				"defaultValue": "Standard_DS3_v2"
+				"defaultValue": "https://adb-7405615189983885.5.azuredatabricks.netzuredatabricks.net"
 			},
 			"p_UserAccountName": {
 				"type": "string",
-				"defaultValue": "24521543@gm.uit.edu.vn"
+				"defaultValue": "buihuutri2107@gmail.com"
 			},
 			"p_DatabaseServerName": {
 				"type": "string",
-				"defaultValue": "db-server-nyc-green-taxi"
+				"defaultValue": "dbserver-nyc-taxi"
 			},
 			"p_DatabaseUserName": {
 				"type": "string",
@@ -640,6 +607,10 @@
 			"kv_DatabasePasswordSecretName": {
 				"type": "string",
 				"defaultValue": "db-user-password"
+			},
+			"p_ClusterId": {
+				"type": "string",
+				"defaultValue": "0905-034139-trfn50gy"
 			}
 		},
 		"annotations": []
