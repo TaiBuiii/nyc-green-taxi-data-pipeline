@@ -4,11 +4,11 @@
 		"parameters": {
 			"db_server_name": {
 				"type": "string",
-				"defaultValue": "db-server-nyc-green-taxi"
+				"defaultValue": "dbserver-nyc-taxi"
 			},
 			"db_name": {
 				"type": "string",
-				"defaultValue": "db-nyc-green-taxi"
+				"defaultValue": "db-nyc-taxi"
 			},
 			"db_user_name": {
 				"type": "string",
@@ -16,7 +16,7 @@
 			},
 			"key_vault_name": {
 				"type": "string",
-				"defaultValue": "key-vault-nyc-green-taxi"
+				"defaultValue": "keyvault-nyc-taxi"
 			},
 			"db_password_secret_name": {
 				"type": "string",
