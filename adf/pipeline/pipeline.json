@@ -188,7 +188,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"pythonFile": {
-									"value": "/Workspace/Repos/@{pipeline().parameters.p_UserAccountName}/nyc-green-taxi-data-pipeline/databricks/src/silver/trips.py",
+									"value": "/Workspace/Repos/@{pipeline().parameters.p_UserAccountName}/nyc-taxi-data-pipeline/databricks/src/silver/trips.py",
 									"type": "Expression"
 								},
 								"parameters": [
@@ -347,7 +347,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"pythonFile": {
-									"value": "/Workspace/Repos/@{pipeline().parameters.p_UserAccountName}/nyc-green-taxi-data-pipeline/databricks/src/silver/@{item()}.py",
+									"value": "/Workspace/Repos/@{pipeline().parameters.p_UserAccountName}/nyc-taxi-data-pipeline/databricks/src/silver/@{item()}.py",
 									"type": "Expression"
 								},
 								"parameters": []
@@ -365,7 +365,7 @@
 										"type": "Expression"
 									},
 									"databricks_access_token_name": {
-										"value": "@pipeline().parameters.kv_DatabasePasswordSecretName",
+										"value": "@pipeline().parameters.kv_DatabrickAccessTokenSecretName",
 										"type": "Expression"
 									},
 									"cluster_id": {
@@ -411,7 +411,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"pythonFile": {
-									"value": "/Workspace/Repos/@{pipeline().parameters.p_UserAccountName}/nyc-green-taxi-data-pipeline/databricks/src/gold/@{item()}.py",
+									"value": "/Workspace/Repos/@{pipeline().parameters.p_UserAccountName}/nyc-taxi-data-pipeline/databricks/src/gold/@{item()}.py",
 									"type": "Expression"
 								},
 								"parameters": []
@@ -487,7 +487,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"pythonFile": {
-									"value": "/Workspace/Repos/@{pipeline().parameters.p_UserAccountName}/nyc-green-taxi-data-pipeline/databricks/src/gold/fact_trips.py",
+									"value": "/Workspace/Repos/@{pipeline().parameters.p_UserAccountName}/nyc-taxi-data-pipeline/databricks/src/gold/fact_trips.py",
 									"type": "Expression"
 								},
 								"parameters": [
