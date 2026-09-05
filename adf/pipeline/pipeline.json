@@ -200,15 +200,15 @@
 								"referenceName": "LS_AzureDatabricks",
 								"type": "LinkedServiceReference",
 								"parameters": {
-									"databrick_workspace_url": {
-										"value": "@pipeline().parameters.p_DatabrickWorkspaceURL",
-										"type": "Expression"
-									},
 									"key_vault_name": {
 										"value": "@pipeline().parameters.p_KeyVaultName",
 										"type": "Expression"
 									},
-									"databrick_access_token_secret_name": {
+									"databrick_workspace": {
+										"value": "@pipeline().parameters.p_DatabrickWorkspaceURL",
+										"type": "Expression"
+									},
+									"databrick_access_token_name": {
 										"value": "@pipeline().parameters.kv_DatabrickAccessTokenSecretName",
 										"type": "Expression"
 									},
@@ -356,15 +356,15 @@
 								"referenceName": "LS_AzureDatabricks",
 								"type": "LinkedServiceReference",
 								"parameters": {
-									"databrick_workspace_url": {
-										"value": "@pipeline().parameters.p_DatabrickWorkspaceURL",
-										"type": "Expression"
-									},
 									"key_vault_name": {
 										"value": "@pipeline().parameters.p_KeyVaultName",
 										"type": "Expression"
 									},
-									"databrick_access_token_secret_name": {
+									"databrick_workspace": {
+										"value": "@pipeline().parameters.p_DatabrickWorkspaceURL",
+										"type": "Expression"
+									},
+									"databrick_access_token_name": {
 										"value": "@pipeline().parameters.kv_DatabrickAccessTokenSecretName",
 										"type": "Expression"
 									},
@@ -417,15 +417,15 @@
 								"referenceName": "LS_AzureDatabricks",
 								"type": "LinkedServiceReference",
 								"parameters": {
-									"databrick_workspace_url": {
-										"value": "@pipeline().parameters.p_DatabrickWorkspaceURL",
-										"type": "Expression"
-									},
 									"key_vault_name": {
 										"value": "@pipeline().parameters.p_KeyVaultName",
 										"type": "Expression"
 									},
-									"databrick_access_token_secret_name": {
+									"databrick_workspace": {
+										"value": "@pipeline().parameters.p_DatabrickWorkspaceURL",
+										"type": "Expression"
+									},
+									"databrick_access_token_name": {
 										"value": "@pipeline().parameters.kv_DatabrickAccessTokenSecretName",
 										"type": "Expression"
 									},
@@ -493,15 +493,15 @@
 								"referenceName": "LS_AzureDatabricks",
 								"type": "LinkedServiceReference",
 								"parameters": {
-									"databrick_workspace_url": {
-										"value": "@pipeline().parameters.p_DatabrickWorkspaceURL",
-										"type": "Expression"
-									},
 									"key_vault_name": {
 										"value": "@pipeline().parameters.p_KeyVaultName",
 										"type": "Expression"
 									},
-									"databrick_access_token_secret_name": {
+									"databrick_workspace": {
+										"value": "@pipeline().parameters.p_DatabrickWorkspaceURL",
+										"type": "Expression"
+									},
+									"databrick_access_token_name": {
 										"value": "@pipeline().parameters.kv_DatabrickAccessTokenSecretName",
 										"type": "Expression"
 									},
