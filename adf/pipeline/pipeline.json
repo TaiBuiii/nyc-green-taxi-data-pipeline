@@ -195,6 +195,28 @@
 									"year",
 									"month"
 								]
+							},
+							"linkedServiceName": {
+								"referenceName": "LS_AzureDatabricks",
+								"type": "LinkedServiceReference",
+								"parameters": {
+									"key_vault_name": {
+										"value": "@pipeline().parameters.p_KeyVaultName",
+										"type": "Expression"
+									},
+									"databricks_workspace": {
+										"value": "@pipeline().parameters.p_DatabrickWorkspaceURL",
+										"type": "Expression"
+									},
+									"databricks_access_token_name": {
+										"value": "@pipeline().parameters.kv_DatabrickAccessTokenSecretName",
+										"type": "Expression"
+									},
+									"cluster_id": {
+										"value": "@pipeline().parameters.p_ClusterId",
+										"type": "Expression"
+									}
+								}
 							}
 						}
 					]
@@ -329,6 +351,28 @@
 									"type": "Expression"
 								},
 								"parameters": []
+							},
+							"linkedServiceName": {
+								"referenceName": "LS_AzureDatabricks",
+								"type": "LinkedServiceReference",
+								"parameters": {
+									"key_vault_name": {
+										"value": "@pipeline().parameters.p_KeyVaultName",
+										"type": "Expression"
+									},
+									"databricks_workspace": {
+										"value": "@pipeline().parameters.p_DatabrickWorkspaceURL",
+										"type": "Expression"
+									},
+									"databricks_access_token_name": {
+										"value": "@pipeline().parameters.kv_DatabasePasswordSecretName",
+										"type": "Expression"
+									},
+									"cluster_id": {
+										"value": "@pipeline().parameters.p_ClusterId",
+										"type": "Expression"
+									}
+								}
 							}
 						}
 					]
@@ -371,6 +415,28 @@
 									"type": "Expression"
 								},
 								"parameters": []
+							},
+							"linkedServiceName": {
+								"referenceName": "LS_AzureDatabricks",
+								"type": "LinkedServiceReference",
+								"parameters": {
+									"key_vault_name": {
+										"value": "@pipeline().parameters.p_KeyVaultName",
+										"type": "Expression"
+									},
+									"databricks_workspace": {
+										"value": "@pipeline().parameters.p_DatabrickWorkspaceURL",
+										"type": "Expression"
+									},
+									"databricks_access_token_name": {
+										"value": "@pipeline().parameters.kv_DatabrickAccessTokenSecretName",
+										"type": "Expression"
+									},
+									"cluster_id": {
+										"value": "@pipeline().parameters.p_ClusterId",
+										"type": "Expression"
+									}
+								}
 							}
 						}
 					]
@@ -428,6 +494,28 @@
 									"year",
 									"month"
 								]
+							},
+							"linkedServiceName": {
+								"referenceName": "LS_AzureDatabricks",
+								"type": "LinkedServiceReference",
+								"parameters": {
+									"key_vault_name": {
+										"value": "@pipeline().parameters.p_KeyVaultName",
+										"type": "Expression"
+									},
+									"databricks_workspace": {
+										"value": "@pipeline().parameters.p_DatabrickWorkspaceURL",
+										"type": "Expression"
+									},
+									"databricks_access_token_name": {
+										"value": "@pipeline().parameters.kv_DatabasePasswordSecretName",
+										"type": "Expression"
+									},
+									"cluster_id": {
+										"value": "@pipeline().parameters.p_ClusterId",
+										"type": "Expression"
+									}
+								}
 							}
 						},
 						{
@@ -507,7 +595,7 @@
 			},
 			"p_DatabrickWorkspaceURL": {
 				"type": "string",
-				"defaultValue": "https://adb-7405615189983885.5.azuredatabricks.netzuredatabricks.net"
+				"defaultValue": "https://adb-7405615189983885.5.azuredatabricks.net"
 			},
 			"p_UserAccountName": {
 				"type": "string",
