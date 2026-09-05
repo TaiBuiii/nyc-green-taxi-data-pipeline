@@ -18,7 +18,7 @@
 		"annotations": [],
 		"type": "AzureDatabricks",
 		"typeProperties": {
-			"domain": "@linkedService().databrick_workspace",
+			"domain": "@linkedService().databricks_workspace",
 			"accessToken": {
 				"type": "AzureKeyVaultSecret",
 				"store": {
@@ -32,7 +32,7 @@
 					}
 				},
 				"secretName": {
-					"value": "@linkedService().databrick_access_token_name",
+					"value": "@linkedService().databricks_access_token_name",
 					"type": "Expression"
 				}
 			},
