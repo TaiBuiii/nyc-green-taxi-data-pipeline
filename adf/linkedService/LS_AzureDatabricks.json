@@ -5,10 +5,10 @@
 			"key_vault_name": {
 				"type": "string"
 			},
-			"databrick_workspace": {
+			"databricks_workspace": {
 				"type": "string"
 			},
-			"databrick_access_token_name": {
+			"databricks_access_token_name": {
 				"type": "string"
 			},
 			"cluster_id": {
