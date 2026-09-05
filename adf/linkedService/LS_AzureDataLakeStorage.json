@@ -4,7 +4,7 @@
 		"parameters": {
 			"storage_name": {
 				"type": "string",
-				"defaultValue": "datalakenycgreentaxi"
+				"defaultValue": "gen2nyctaxi"
 			}
 		},
 		"annotations": [],
