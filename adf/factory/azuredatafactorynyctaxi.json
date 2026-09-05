@@ -1,0 +1,15 @@
+{
+	"name": "azuredatafactorynyctaxi",
+	"properties": {
+		"trustModeClaimForMi": {
+			"value": "Disabled",
+			"editable": true
+		}
+	},
+	"location": "eastus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "74f88b92-6ece-4fa8-bf61-982866057e04",
+		"tenantId": "b51b393b-2c9c-4f2b-a49f-84466d9e3d03"
+	}
+}
