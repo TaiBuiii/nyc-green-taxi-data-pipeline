@@ -13,12 +13,6 @@
 			},
 			"cluster_id": {
 				"type": "string"
-			},
-			"select_cluster": {
-				"type": "string"
-			},
-			"cluster_node_type": {
-				"type": "string"
 			}
 		},
 		"annotations": [],
