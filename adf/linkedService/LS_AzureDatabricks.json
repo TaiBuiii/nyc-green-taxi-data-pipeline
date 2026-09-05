@@ -1,0 +1,42 @@
+{
+	"name": "LS_AzureDatabricks",
+	"properties": {
+		"parameters": {
+			"key_vault_name": {
+				"type": "string"
+			},
+			"databrick_workspace": {
+				"type": "string"
+			},
+			"databrick_access_token_name": {
+				"type": "string"
+			},
+			"cluster_id": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "AzureDatabricks",
+		"typeProperties": {
+			"domain": "@linkedService().databrick_workspace",
+			"accessToken": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "LS_AzureKeyVault",
+					"type": "LinkedServiceReference",
+					"parameters": {
+						"key_vault_name": {
+							"value": "@linkedService().key_vault_name",
+							"type": "Expression"
+						}
+					}
+				},
+				"secretName": {
+					"value": "@linkedService().databrick_access_token_name",
+					"type": "Expression"
+				}
+			},
+			"existingClusterId": "@linkedService().cluster_id"
+		}
+	}
+}
