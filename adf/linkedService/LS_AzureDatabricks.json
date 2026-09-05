@@ -3,20 +3,16 @@
 	"properties": {
 		"parameters": {
 			"databrick_workspace_url": {
-				"type": "string",
-				"defaultValue": "https://adb-7405616972863473.13.azuredatabricks.net"
+				"type": "string"
 			},
 			"key_vault_name": {
-				"type": "string",
-				"defaultValue": "key-vault-nyc-green-taxi"
+				"type": "string"
 			},
 			"databrick_access_token_secret_name": {
-				"type": "string",
-				"defaultValue": "databricks-token"
+				"type": "string"
 			},
 			"cluster_id": {
-				"type": "string",
-				"defaultValue": "0905-034139-trfn50gy"
+				"type": "string"
 			}
 		},
 		"annotations": [],
