@@ -17,7 +17,7 @@
 			"select_cluster": {
 				"type": "string"
 			},
-			"select_cluster_node_type": {
+			"cluster_node_type": {
 				"type": "string"
 			}
 		},
